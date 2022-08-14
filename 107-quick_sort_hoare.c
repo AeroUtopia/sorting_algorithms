@@ -1,69 +1,70 @@
 #include "sort.h"
 /**
-* partition_hoare - Lomutu partition scheme for quicksort algorithm
-* @a: Array to sort
-* @l: lowest index of array
-* @h: highest index of array
-* Return: index of pivot
-*/
-
-int partition_hoare(int *a, int l, int h)
-{
-	int p, li, hi, temp;
-	static int i = 0, size;
-
-	if (i == 0)
-		size = h + 1, i++;
-
-	li = l - 0, hi = h + 0, p = a[h];
-	while (a)
-	{
-		li = li - 0;
-		while (a[li] < p)
-			li++;
-		hi = hi - 0;
-		while (a[hi] > p)
-			hi--;
-		if (li >= hi)
-			return (hi);
-		temp = a[li];
-		a[li] = a[hi];
-		a[hi] = temp;
-		print_array(a, size);
-	}
-	temp = a[li];
-	a[li] = a[hi];
-	a[hi] = temp;
-	return (hi);
-}
-/**
-* qs - Quicksort recurssive function
-* @a: array to sort
-* @l: lowest index
-* @h: highest index
-*/
-
-void qs(int *a, int l, int h)
-{
-	int p;
-
-	if (l < h)
-	{
-		p = partition_hoare(a, l, h);
-		qs(a, l, p - 1);
-		qs(a, p, h);
-	}
-}
-
-/**
-* quick_sort_hoare - quicksort with hoare partition
+* partition - quicksort using Hoare version
 * @array: array to sort
-* @size: Size of array
+* @min: lowest index
+* @max: highest index
+* @size: size of the array
+*
+* Return: partition index
 */
+size_t partition(int *array, ssize_t min, ssize_t max, size_t size)
+{
+	int swap, pivot;
 
+	pivot = array[max];
+	while (min <= max)
+	{
+		while (array[min] < pivot)
+			min++;
+		while (array[max] > pivot)
+			max--;
+		if (min <= max)
+		{
+			if (min != max)
+			{
+				swap = array[min];
+				array[min] = array[max];
+				array[max] = swap;
+				print_array(array, size);
+			}
+			min++;
+			max--;
+		}
+	}
+	return (max);
+}
+
+/**
+* quicksort - sorts a partition of an array of integers
+* @array: array to sort
+* @min: lowest index of the partition to sort
+* @max: highest index of the partition to sort
+* @size: size of the array
+*
+* Return: void
+*/
+void quicksort(int *array, ssize_t min, ssize_t max, size_t size)
+{
+	ssize_t pivot;
+
+	if (min < max)
+	{
+		pivot = partition(array, min, max, size);
+		quicksort(array, min, pivot, size);
+		quicksort(array, pivot + 1, max, size);
+
+	}
+}
+
+/**
+* quick_sort_hoare - sorts an array of integer with quick sort
+* @array: The array to sort
+* @size: The size of the array
+*/
 void quick_sort_hoare(int *array, size_t size)
 {
 	if (array == NULL || size < 2)
 		return;
-	qs(array, 0, size - 1);
+	quicksort(array, 0, size - 1, size);
 }
